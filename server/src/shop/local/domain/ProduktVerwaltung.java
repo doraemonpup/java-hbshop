@@ -190,7 +190,7 @@ public class ProduktVerwaltung    {
 					break;
 				}
 			}
-			schreibeDaten("myshop_A.txt");
+			schreibeDaten("items.txt");
 			return true;
 		}catch(Exception e){
 			return false;

@@ -1,8 +1,8 @@
 user1
 user1
 user1@user.com
-U1
-First User
+User1
+FirstUser
 Munich
 77777
 Hauptstr. 11

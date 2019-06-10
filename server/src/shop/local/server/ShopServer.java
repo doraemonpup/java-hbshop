@@ -32,7 +32,7 @@ public class ShopServer {
 	 */
 	public ShopServer(int port) throws IOException, ProduktExistiertBereitsException, MitarbeiterExistiertBereitsException {
 		
-		esi = new ShopVerwaltung("myshop"); 
+		esi = new ShopVerwaltung("items"); 
 		
 		if (port == 0)
 			port = DEFAULT_PORT;

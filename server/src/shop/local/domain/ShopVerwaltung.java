@@ -43,7 +43,7 @@ public class ShopVerwaltung implements EShopInterface {
 		this.datei = datei;
 		in = new BufferedReader(new InputStreamReader(System.in));
 		produktverwaltung = new ProduktVerwaltung();
-		produktverwaltung.liesDaten(datei+"_A.txt");
+		produktverwaltung.liesDaten(datei+".txt");
 		
 		mitarbeiterverwaltung = new MitarbeiterVerwaltung();
 		mitarbeiterverwaltung.liesDaten("mitarbeiter_list.txt");
@@ -110,7 +110,7 @@ public class ShopVerwaltung implements EShopInterface {
 	
 	
 	public void schreibeProdukt() throws IOException {
-		produktverwaltung.schreibeDaten(datei+"_A.txt");
+		produktverwaltung.schreibeDaten(datei+".txt");
 	}
 	
 	// schreibe Mitarbeiter in Dateiqeulle
