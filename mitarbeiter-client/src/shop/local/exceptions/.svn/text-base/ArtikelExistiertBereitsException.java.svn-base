@@ -1,0 +1,14 @@
+package shop.local.exceptions;
+
+import shop.local.valueobjects.Artikel;
+
+/**
+ * @exception Fehler auffangen - Artikel ist bereits vorhanden
+ **/
+public class ArtikelExistiertBereitsException extends Exception{
+	
+	public ArtikelExistiertBereitsException(Artikel artikel, String zusatzMsg) {
+		super("Artikel ID " + artikel.getID() + ", Name " + artikel.getArtikelName() 
+				+ " existiert bereits" + zusatzMsg);
+	}
+}

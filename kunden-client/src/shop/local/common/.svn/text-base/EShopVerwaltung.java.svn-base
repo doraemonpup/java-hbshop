@@ -1,0 +1,265 @@
+package shop.local.domain;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Vector;
+import java.util.Iterator;
+
+import shop.local.ui.cui.KaeuferClient;
+import shop.local.ui.cui.VerkaeuferClient;
+import shop.local.valueobjects.Artikel;
+import shop.local.valueobjects.GekaufteArtikel;
+import shop.local.valueobjects.Kunde;
+import shop.local.valueobjects.Mitarbeiter;
+import shop.local.exceptions.ArtikelExistiertBereitsException;
+import shop.local.exceptions.ArtikelNichtGefundenException;
+import shop.local.exceptions.KundeExistiertBereitsException;
+import shop.local.exceptions.MitarbeiterExistiertBereitsException;
+
+/**
+ * Klasse zur Verwaltung von eShop.
+ * Bietet Methoden zum Zurückgeben aller Artikel im Bestand, 
+ * zur Suche nach Artikel, zum Einfügen neuer Artikel, 
+ * zur Ausgabe die Artikel 
+ * 
+ * @author kritsada, joe, tobias 
+ */
+
+public class EShopVerwaltung {
+	
+	private BufferedReader in;
+	private ArtikelVerwaltung artikelverwaltung;
+	private KundenVerwaltung kundenverwaltung;
+	private MitarbeiterVerwaltung mitarbeiterverwaltung;
+	private LogInVerwaltung lgv;
+	private String datei = "";
+	
+	public EShopVerwaltung(String datei) throws IOException, ArtikelExistiertBereitsException, MitarbeiterExistiertBereitsException{
+		this.datei = datei;
+		in = new BufferedReader(new InputStreamReader(System.in));
+		artikelverwaltung = new ArtikelVerwaltung();
+		artikelverwaltung.liesDaten(datei+"_A.txt");
+		
+		mitarbeiterverwaltung = new MitarbeiterVerwaltung();
+		mitarbeiterverwaltung.liesDaten("MITARBEITER_LISTE.txt");
+		mitarbeiterverwaltung.liesMitLogFile("MitLog.txt");
+		
+		kundenverwaltung = new KundenVerwaltung();
+		kundenverwaltung.liesDaten("KUNDEN_LISTE.txt");
+		lgv = new LogInVerwaltung();
+	}
+	
+
+	public boolean fuegeArtikelEin(int id, String name, float preis, int menge, String type) {
+		Artikel a = new Artikel(id,name,preis,menge,type);
+		try{
+			artikelverwaltung.einfuegen(a);
+			mitarbeiterverwaltung.addLogFile(a,1);
+		}catch(ArtikelExistiertBereitsException e){
+			return false;
+		}
+		return true;
+	}
+	
+	
+	public Vector<Artikel> gibAlleArtikel() {
+		// einfach delegieren an artikelverwaltung
+		return artikelverwaltung.getArtikelBestand();
+	}
+	
+	public Vector<Kunde> gibAlleKunden() {
+		// einfach delegieren an artikelverwaltung
+		return kundenverwaltung.getKunde();
+	}
+
+	public boolean entfernenArtikel(Artikel a) {
+		try{
+			boolean ok = artikelverwaltung.entfernenArtikel(a);
+			mitarbeiterverwaltung.addLogFile(a, 2);
+		}catch(ArtikelNichtGefundenException e){
+			e.printStackTrace();
+			return false;
+		}
+			return true;
+	}
+	
+	// schreibe Artikel in Dateiqeulle
+	public void schreibeArtikel() throws IOException {
+		artikelverwaltung.schreibeDaten(datei+"_A.txt");
+	}
+	
+	// schreibe Mitarbeiter in Dateiqeulle
+	public void schreibeMitarbeiter() throws IOException {
+		mitarbeiterverwaltung.schreibeMitarbeiter("MITARBEITER_LISTE.txt");
+	}
+	
+	// schreibe Kunde in Dateiqeulle
+	public void schreibeKunde() throws IOException {
+		kundenverwaltung.schreibeKunden("KUNDEN_LISTE.txt");
+	}
+	
+	// Methode zum Einfuegen ein Mitarbeiter
+	public boolean fuegeMitarbeiterEin(String mitarbeiterID,String passwort,String email, String vorname, String nachname) {
+		Mitarbeiter m = new Mitarbeiter(mitarbeiterID,passwort,email,vorname,nachname);
+		try{
+			mitarbeiterverwaltung.einfuegen(m);
+		}catch(MitarbeiterExistiertBereitsException e){
+			return false;
+		}
+		mitarbeiterverwaltung.addLogFile(m, 1);
+		return true;
+	}
+	
+	//Methode zum Einfuegen eine Kunde
+	public boolean fuegeKundeEin(String benutzername,String passwort,String email, String vorname, String nachname) {
+		Kunde k = new Kunde(benutzername,passwort,email,vorname,nachname);
+		try{
+			kundenverwaltung.einfuegen(k);
+		}catch(KundeExistiertBereitsException e){
+			return false;
+		}
+		return true;
+	}
+	
+	
+	// Kontrolliere benutzername und passwort von Mitarbeiter beim Login 
+	public void verkaeuferLogin() throws Exception{
+		boolean logInOk = false;
+		do{
+			System.out.println("####  LOGIN  ####");
+			logInOk = lgv.MitlogIn();
+			if(logInOk){
+				VerkaeuferClient v = new VerkaeuferClient("MYSHOP");				
+				v.run();
+			}	
+			else{
+				System.out.println("Benutzername oder Passwort ist falsch!!!");
+			}
+				
+		}while(!logInOk);
+	}
+	
+
+	
+	// Kontrolliere benutzername und passwort von Kunde beim Login 
+	public void kaeuferLogin() throws Exception{
+		boolean logInOk = false;
+		do{
+			System.out.println("####  LOGIN  ####");
+			logInOk = lgv.KunlogIn();
+			if(logInOk){
+				KaeuferClient k = new KaeuferClient("MYSHOP");				
+				k.run();
+			}	
+			else{
+				System.out.println("Benutzername oder Passwort ist falsch!!!");
+			}
+				
+		}while(!logInOk);
+	}
+	
+	//GUI-Kunden-LogIn
+	public boolean kundenLogin() throws Exception{
+		if(lgv.KundenLogin()==true){
+			return true;
+		}
+		else return false;
+	}
+	//GUI-Mitarbeiter-LogIn
+	public boolean mitarbeiterLogin() throws Exception{
+		if(lgv.MitarbeiterLogin()==true){
+			return true;
+		}
+		else return false;
+	}
+	//Frage nach notwendige Info beim registieren
+	public void fuegeNeueKundeEin() throws IOException {
+		System.out.print("Geben Sie den Benutzername ein > ");
+		String benutzername = liesEingabe();
+		System.out.print("Geben Sie Passwort ein > ");
+		String passwort = liesEingabe();
+		System.out.print("Geben Sie Ihre E-Mail-Adresse ein > ");
+		String email = liesEingabe();
+		System.out.print("Geben Sie Ihren Vorname ein > ");
+		String vorname = liesEingabe();
+		System.out.print("Geben Sie Ihren Nachname ein > ");
+		String nachname = liesEingabe();
+		
+		fuegeKundeEin(benutzername,passwort,email,vorname,nachname);
+		
+	}
+	// Methode zum Suchen eines Artikel nach ID
+	public Vector<Artikel> sucheNachID(String id) {
+		return artikelverwaltung.sucheArtikelNachID(id); 
+	}
+
+	// Methode zum Suchen eines Artikel nach Name
+	public Vector<Artikel> sucheNachName(String name){
+		return artikelverwaltung.sucheArtikelNachName(name);
+	}
+	
+	private String liesEingabe() throws IOException {
+		// TODO Auto-generated method stub
+		return in.readLine();
+	}
+
+
+	public Artikel sucheArtikel(String id) throws ArtikelNichtGefundenException {
+		Artikel artikel = artikelverwaltung.suchEineArtikel(id);
+		if(artikel != null){
+			return artikel;
+		}
+		throw new ArtikelNichtGefundenException();
+	}
+
+
+	public void printRechnung(Vector<GekaufteArtikel> warenkorb,float summe) {
+		System.out.print("###### Rechnung ######\n\n");
+		Iterator iter = warenkorb.iterator();
+		int i = 1;
+		while(iter.hasNext()){
+			GekaufteArtikel gekaufteartikel = (GekaufteArtikel)iter.next();
+			System.out.print(i+". ");
+			System.out.print(gekaufteartikel.toString()+"\n");
+			i++;
+		}
+		System.out.print("\n=================================\n");
+		System.out.print("Summe      =      "+summe+"\n");
+		System.out.print("=================================\n");
+		System.out.print("Danke fuer Ihren Einkauf\n\n");
+		
+	}
+	
+	// Set Menge von Artikel nach dem Einkauf
+	public void setArtikelMenge(Vector<GekaufteArtikel> warenkorb) throws Exception {
+		
+		Iterator iter = warenkorb.iterator();
+		while(iter.hasNext()){
+			GekaufteArtikel gekaufteartikel = (GekaufteArtikel)iter.next();
+			// suche zuerst Artikel nach id und dann set neue Menge
+			Artikel a = sucheArtikel(Integer.toString(gekaufteartikel.getID()));
+			a.setArtikelMenge(a.getArtikelMenge()- gekaufteartikel.getGekaufteAnzahl());
+		}
+	}
+
+	// Sortieren Artikel nach ID
+	public void artikelSortierenNachID() throws IOException {
+		
+		boolean ok = artikelverwaltung.sortierenNachID();
+		if(ok){
+			schreibeArtikel();
+		}
+		else{
+			System.out.println("Error beim Sortieren");
+		}
+	}
+
+
+	public void schreibeLogFile() throws IOException {
+		// TODO Auto-generated method stub
+		mitarbeiterverwaltung.schreibeMitLogFile("MitLog.txt");
+	}
+
+
+	
+}

@@ -1,0 +1,98 @@
+package shop.local.valueobjects;
+
+/**
+ * Klasse Kunde.
+ * 
+ * @author Kritsada Khantacha
+ */
+
+public class Kunde {
+	//private int kundenID;
+	private String vorname;
+	private String nachname;
+	private String benutzername;
+	private String passwort;
+	private String email;
+	private String wohnort = "-";
+	private String strasseUndHausnummer = "-";
+	private float umsatz = 0;
+	
+	public Kunde(){}
+	public Kunde(String benutzername,String passwort,String email,String nachname,String vorname){
+	//	this.kundenID = id;
+		this.benutzername = benutzername;
+		this.passwort = passwort;
+		this.email = email;
+		this.nachname = nachname;
+		this.vorname = vorname;	
+	}
+	
+	public Kunde(String benutzername,String passwort,String email,String nachname,String vorname,String wohnort,String strUndHausnr,float umsatz){
+		//	this.kundenID = id;
+			this.benutzername = benutzername;
+			this.passwort = passwort;
+			this.email = email;
+			this.nachname = nachname;
+			this.vorname = vorname;	
+			this.wohnort = wohnort;
+			this.strasseUndHausnummer = strUndHausnr;
+			this.umsatz = umsatz;
+		}
+	//Methoden zum Setzen und Lesen die Eigenschaften von Kunden
+//	public int getID(){
+//		return kundenID;
+//	}
+	
+	public String getBenutzername(){
+		return benutzername;
+	}
+	public void setBenutzername(String b){
+		this.benutzername = b;
+	}
+	public String getPasswort(){
+		return passwort;
+	}
+	public void setPasswort(String pass){
+		this.passwort = pass;
+	}
+	public String getEmail(){
+		return email;
+	}
+	public void setEmail(String email){
+		this.email = email;
+	}
+	public String getVorname(){
+		return vorname;
+	}
+	public String getNachname(){
+		return nachname;
+	}
+	public void setVorname(String vorname){
+		this.vorname = vorname;
+	}
+	public void setNachname(String nachname){
+		this.nachname = nachname;
+	}
+	public String getWohnort(){
+		return wohnort;
+	}
+	public void setWohnort(String wohnort){
+		this.wohnort = wohnort;
+	}
+	public String getStrasseUndHausnummer(){
+		return strasseUndHausnummer;
+	}
+	public void setStrasseUndHausnummer(String strasseUndHausnr){
+		this.strasseUndHausnummer = strasseUndHausnr;
+	}
+	public float getUmsatz(){
+		return umsatz;
+	}
+	public void setUmsatz(float umsatz){
+		this.umsatz = umsatz;
+	}
+	
+	public String toString(){
+		return ("Benutzername: " + benutzername + " / Vorname: " + vorname + " / Nachname: " + nachname );
+	}
+}

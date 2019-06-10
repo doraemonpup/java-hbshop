@@ -1,0 +1,161 @@
+package shop.local.domain;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.Vector;
+
+import shop.local.exceptions.ArtikelExistiertBereitsException;
+import shop.local.exceptions.MitarbeiterExistiertBereitsException;
+import shop.local.persistence.FilePersistenceManager;
+import shop.local.persistence.PersistenceManager;
+import shop.local.valueobjects.Artikel;
+import shop.local.valueobjects.Kunde;
+import shop.local.valueobjects.Mitarbeiter;
+
+/**
+ * Klasse zur Verwaltung der vorhandenen Mitarbeiter(Verkäufer).
+ * Mitarbeiter können eingesehen und bearbeitet werden.
+ * Neue Mitarbeiter können angelegt werden, üder Konsole!!
+ * @param ....
+ * @exception MitarbeiterExistiertBereitsException - Fehler auffangen, sei ein anzulegen versuchter Mitarbeiter bereits vorhanden
+ */
+
+public class MitarbeiterVerwaltung {
+
+	// Verwaltung des Mitarbeiterbestands in einem Vector.
+	private Vector mitarbeiterBestand = new Vector();
+	// Persistenz-Schnittstelle, die für die Details des Dateizugriffs verantwortlich ist.
+	private PersistenceManager pm = new FilePersistenceManager(); 
+	// welcher Mitarbeiter ist immoment
+	private static Mitarbeiter mitarbeiterBesitzer = new Mitarbeiter();
+	// LogFile in Vector, speichern alle Ereignise, wer, macht was..und wann
+	private Vector MitlogFile = new Vector();
+	
+
+	public void liesDaten(String datei) throws IOException{
+		pm.openForReading(datei);
+		
+		Mitarbeiter einMitarbeiter;
+		do{
+			// Mitarbeiter-Objekt einlesen...
+			einMitarbeiter = pm.ladeMitarbeiter();
+			if(einMitarbeiter!=null){
+				// ein Mitarbeiter einfuegen...
+				try{
+				einfuegen(einMitarbeiter);
+				}catch(MitarbeiterExistiertBereitsException e){
+					
+				}
+			}
+		}while(einMitarbeiter!=null);
+		pm.close();
+		
+	}
+	
+	
+	public void schreibeMitarbeiter(String datei) throws IOException  {
+		// PersistenzManager für Schreibvorgänge öffnen
+		pm.openForWriting(datei);
+
+		if (!mitarbeiterBestand.isEmpty()) {
+			Iterator<Mitarbeiter> iter = mitarbeiterBestand.iterator();
+			while (iter.hasNext()) {
+				Mitarbeiter m = (Mitarbeiter) iter.next();
+				pm.speichereMitarbeiter(m);				
+			}
+		}			
+	
+		// Persistenz-Schnittstelle wieder schließen
+		pm.close();
+	}
+	
+	public void einfuegen(Mitarbeiter einMitarbeiter)  throws  MitarbeiterExistiertBereitsException {
+		if (mitarbeiterBestand.contains(einMitarbeiter)){
+			throw new MitarbeiterExistiertBereitsException(einMitarbeiter, " - in 'einfuegen()' ");
+		}
+		mitarbeiterBestand.add(einMitarbeiter);
+	}
+	
+	public Vector<Mitarbeiter> getMitarbeiter() {
+		// Gib Mitarbeiterliste in Vector zurueck.
+		return mitarbeiterBestand;
+	}
+
+	// Methode zum Setzen eines Besitzers
+	public void setzeBesitzer(Mitarbeiter m) {
+		mitarbeiterBesitzer = m;
+		System.out.println(mitarbeiterBesitzer.getVorname()+mitarbeiterBesitzer.getNachname());
+	}
+
+	// add eine Situation in LogFile: ein Mitarbeiter hat ein Artikel angelegt.
+	public void addLogFile(Artikel a,int i) {
+		if(i==1){
+			MitlogFile.add(now("MM/dd/yy 'at' hh:mm:ss  ")+" "+mitarbeiterBesitzer.getVorname()+" "+mitarbeiterBesitzer.getNachname() +" legte einen Artikel "+a.toString()+" an");
+		}
+		else if(i==2){
+			MitlogFile.add(now("MM/dd/yy 'at' hh:mm:ss  ")+" "+mitarbeiterBesitzer.getVorname()+" "+mitarbeiterBesitzer.getNachname() +" entfernte einen Artikel "+a.toString()+" an");
+		}
+	}
+	
+	public void addLogFile(Mitarbeiter neuMitarbeiter,int i) {
+		if(i==1){
+			MitlogFile.add(now("MM/dd/yy 'at' hh:mm:ss  ")+" "+mitarbeiterBesitzer.getVorname()+" "+mitarbeiterBesitzer.getNachname() +" legte einen Mitarbeiter "+neuMitarbeiter.toString()+" an");
+		}
+		else if(i==2){
+			MitlogFile.add(now("MM/dd/yy 'at' hh:mm:ss  ")+" "+mitarbeiterBesitzer.getVorname()+" "+mitarbeiterBesitzer.getNachname() +" entfernte einen Mitarbeiter "+neuMitarbeiter.toString()+" an");
+		}
+	}
+	
+	public void liesMitLogFile(String datei) throws IOException{
+		pm.openForReading(datei);
+		
+		String einLogFile;
+		do{
+			// Mitarbeiter-Objekt einlesen...
+			einLogFile = pm.ladeMitLogFile();
+			if(einLogFile!=null){
+				// ein Mitarbeiter einfuegen...
+				try{
+				einfuegen(einLogFile);
+				}catch(Exception e){
+					
+				}
+			}
+		}while(einLogFile!=null);
+		pm.close();
+		
+	}
+	
+	  
+	private void einfuegen(String einLogFile) {
+		MitlogFile.add(einLogFile);
+		
+	}
+	
+	// Schreibe LogFile in externe Quelle
+	public void schreibeMitLogFile(String datei) throws IOException  {
+		// PersistenzManager für Schreibvorgänge öffnen
+		pm.openForWriting(datei);
+
+		if (!MitlogFile.isEmpty()) {
+			Iterator<String> iter = MitlogFile.iterator();
+			while (iter.hasNext()) {
+				String s = (String) iter.next();
+				pm.speichereMitLogFile(s);				
+			}
+		}			
+	
+		// Persistenz-Schnittstelle wieder schließen
+		pm.close();
+	}
+
+
+	public static String now(String dateFormat) {
+		    Calendar cal = Calendar.getInstance();
+		    SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+		    return sdf.format(cal.getTime());
+	}
+	
+}	

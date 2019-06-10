@@ -1,0 +1,182 @@
+package shop.local.domain;
+
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Vector;
+import java.util.Collections;
+import java.util.Comparator;
+import shop.local.exceptions.ArtikelExistiertBereitsException;
+import shop.local.exceptions.ArtikelNichtGefundenException;
+import shop.local.persistence.FilePersistenceManager;
+import shop.local.persistence.PersistenceManager;
+import shop.local.valueobjects.Artikel;
+import shop.local.valueobjects.GekaufteArtikel;
+
+public class ArtikelVerwaltung  {
+	
+	// Verwaltung des Artikelbestands in einem Vector.
+	private Vector artikelBestand = new Vector();
+	// Persistenz-Schnittstelle, die für die Details des Dateizugriffs verantwortlich ist.
+	private PersistenceManager pm = new FilePersistenceManager(); 
+	//private ArtikelVerwaltung artikelverwaltung;
+	private MitarbeiterVerwaltung mitVerwaltung = new MitarbeiterVerwaltung();
+	
+	public void liesDaten(String datei) throws IOException{
+		pm.openForReading(datei);
+		
+		Artikel einArtikel;
+		do{
+			// Artikel-objekt einlesen...
+			einArtikel = pm.ladeArtikel();
+			if(einArtikel!=null){
+				// Artikel einfuegen...
+				try{
+				einfuegen(einArtikel);
+				}catch(ArtikelExistiertBereitsException e){
+					
+				}
+			}
+		}while(einArtikel!=null);
+		pm.close();
+		
+	}
+	
+	public void schreibeDaten(String datei) throws IOException  {
+		// PersistenzManager für Schreibvorgänge öffnen
+		pm.openForWriting(datei);
+
+		if (!artikelBestand.isEmpty()) {
+			Iterator<Artikel> iter = artikelBestand.iterator();
+			while (iter.hasNext()) {
+				Artikel a = (Artikel) iter.next();
+				pm.speichereArtikel(a);				
+			}
+		}			
+		
+		// Persistenz-Schnittstelle wieder schließen
+		pm.close();
+	}
+	
+	public void einfuegen(Artikel einArtikel) throws ArtikelExistiertBereitsException {
+		if (artikelBestand.contains(einArtikel))
+			throw new ArtikelExistiertBereitsException(einArtikel, " - in 'einfuegen()'");
+
+		artikelBestand.add(einArtikel);
+	}
+	
+	//Suchmethode
+	
+	public Vector<Artikel> sucheArtikelNachID(String id) {
+		Vector<Artikel> ergebnis = new Vector<Artikel>();
+		
+		Iterator<Artikel> iter = artikelBestand.iterator();
+		while (iter.hasNext()) {
+			Artikel artikel = (Artikel) iter.next();
+			String ID = Integer.toString(artikel.getID());
+			if ( ID.equals(id)) {
+				ergebnis.add(artikel);
+			}
+		}
+		
+		return ergebnis;
+	}
+	
+	public Vector<Artikel> sucheArtikelNachName(String titel) {
+		Vector<Artikel> ergebnis = new Vector<Artikel>();
+		
+		Iterator<Artikel> iter = artikelBestand.iterator();
+		while (iter.hasNext()) {
+			Artikel artikel = (Artikel) iter.next();
+			if ( artikel.getArtikelName().equals(titel)) {
+				ergebnis.add(artikel);
+			}
+		}
+		
+		return ergebnis;
+	}
+	
+	public Vector<Artikel> getArtikelBestand() {
+		// Achtung: hier wäre es sinnvoller / sicherer, eine Kopie des Vectors 
+		// mit Kopien der Buch-Objekte zurückzugeben
+		return artikelBestand;
+	}
+
+	public boolean entfernenArtikel(Artikel artikel) throws ArtikelNichtGefundenException {
+		try{
+				artikelBestand.remove(artikel);
+				return true;
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	// Methode zum Suchen ein Artikel und gibt Artikel zurueck.
+	public Artikel suchEineArtikel(String id) throws ArtikelNichtGefundenException{
+		Iterator<Artikel> iter = artikelBestand.iterator();
+		while (iter.hasNext()) {
+			Artikel artikel = (Artikel) iter.next();
+			String Id = Integer.toString(artikel.getID());
+			if ( Id.equals(id)) {
+				return artikel;
+			}
+		}
+		return null;
+	}
+
+
+	public float berechnenSumme(Vector artikel){
+		float summe = 0;
+		Iterator iter = artikel.iterator();
+		while(iter.hasNext()){
+			GekaufteArtikel gekaufteartikel = (GekaufteArtikel)iter.next();
+			summe = summe + (gekaufteartikel.getArtikelPreis()*gekaufteartikel.getGekaufteAnzahl());
+		}
+		return summe;
+	}
+
+	
+	// Methode zum Set die Menge von Artikel nach dem Einkauf
+	public boolean setMengeNachdemEinkauf(Vector<GekaufteArtikel> warenkorb) {
+		// TODO Auto-generated method stub
+		Iterator iter = artikelBestand.iterator();
+		while(iter.hasNext()){
+			Artikel artikel = (Artikel)iter.next();
+			
+			Iterator<GekaufteArtikel> iter2 = warenkorb.iterator();
+			while(iter2.hasNext()){
+				GekaufteArtikel gekaufteartikel = (GekaufteArtikel)iter2.next();
+				if(artikel.getID() == gekaufteartikel.getID()){
+					artikel.setArtikelMenge(artikel.getArtikelMenge()-gekaufteartikel.getGekaufteAnzahl());
+				}
+			}
+		}
+		return true;
+		
+	}
+
+	//Artikel nach ID sortieren.
+	public boolean sortierenNachID() {
+		try{
+		Collections.sort(artikelBestand, new Comparator() {
+			public int compare(Object o1, Object o2) {
+				Artikel a1 = (Artikel) o1;
+				Artikel a2 = (Artikel) o2;
+				return Integer.toString(a1.getID()).compareTo(Integer.toString(a2.getID()));
+			}
+		});
+		return true;
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	
+
+
+
+	
+
+}
+

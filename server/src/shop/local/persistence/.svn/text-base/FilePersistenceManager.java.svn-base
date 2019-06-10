@@ -1,0 +1,210 @@
+package shop.local.persistence;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import shop.local.valueobjects.Artikel;
+import shop.local.valueobjects.Kunde;
+import shop.local.valueobjects.Mitarbeiter;
+
+
+
+public class FilePersistenceManager implements PersistenceManager {
+
+//########################Datei …ffnen/Schliessen##################
+	// Methoden zum Oeffnen und schlie§en der Datei
+	private BufferedReader reader = null;
+	private PrintWriter writer = null;
+	
+	public void openForReading(String datei) throws FileNotFoundException {
+		reader = new BufferedReader(new FileReader(datei));
+	}
+
+	public void openForWriting(String datei) throws IOException {
+		writer = new PrintWriter(new FileWriter(datei));
+	}
+
+	public boolean close() {
+		if (writer != null)
+			writer.close();
+		
+		if (reader != null) {
+			try {
+				reader.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				
+				return false;
+			}
+		}
+
+		return true;
+	}
+	
+//###################ARTIKEL#############################################################
+	/**
+	 * Methode zum Einlesen der Artikeldate aus einer externen Datenquelle.
+	 * 
+	 * @return Artikel-Objekt, wenn Einlesen erfolgreich, false null
+	 */
+	public Artikel ladeArtikel() throws IOException {
+		// ID einlesen...
+		String StringId = leseDaten();
+		if (StringId == null) {
+			// keine Daten mehr vorhanden
+			return null;
+		}
+		// Umwandeln in int
+		int id = Integer.parseInt(StringId);
+		// Name einlesen ...
+		String name = leseDaten();
+		
+		// Preis einlesen...
+		String StringPreis = leseDaten();
+		float preis = Float.parseFloat(StringPreis);
+		
+		//Menge einlesen...
+		String StringMenge = leseDaten();
+		int menge = Integer.parseInt(StringMenge);
+		
+		// Type einlesen..
+		String type = leseDaten();
+		// neues Artikel-Objekt anlegen und zurückgeben
+		return new Artikel(id, name, preis, menge, type);
+	}
+	
+	public Mitarbeiter ladeMitarbeiter() throws IOException{
+		//Benutzername einlesen
+		String MitId = leseDaten();
+		if(MitId == null){
+			return null;
+		}
+
+        String passwort = leseDaten();
+        String email = leseDaten();
+        String vorname = leseDaten();
+        String nachname = leseDaten();
+        String wohnort = leseDaten();
+        String strUndHausNr = leseDaten();
+        
+        return new Mitarbeiter(MitId,passwort,email,vorname,nachname,wohnort,strUndHausNr);
+
+	}
+	
+
+
+	/**
+
+	 * Methode zum Schreiben der Artikeldaten in eine externe Datenquelle.
+
+	 * Methode zum Schreiben der Artikeldaten in eine externe Datenquelle.
+	 * 
+	 * @param a Artikel-Objekt, das gespeichert werden soll
+	 * @return true, wenn Schreibvorgang erfolgreich, false sonst
+	 */
+	public boolean speichereArtikel(Artikel a) throws IOException {
+		// ID, Name, Preis und Menge schreiben
+		try{
+			schreibeDaten(new Integer(a.getID()).toString());
+			schreibeDaten(a.getArtikelName());
+			schreibeDaten(new Float(a.getArtikelPreis()).toString());
+			schreibeDaten(new Integer(a.getArtikelMenge()).toString());
+			schreibeDaten(a.getType());
+			return true;
+		}catch(Exception e){ 
+			e.printStackTrace();
+			return false;}
+	}
+
+//###################KUNDEN#############################################################
+
+	public Kunde ladeKunde() throws IOException {
+		String benutzername = leseDaten();
+		if(benutzername == null){
+			return null;
+		}
+		String passwort = leseDaten();
+		String email = leseDaten();
+		String vorname = leseDaten();
+		String nachname = leseDaten();
+		String wohnort = leseDaten();
+		String strUndHausNr = leseDaten();
+		float umsatz = Float.parseFloat(leseDaten());
+		
+		return new Kunde(benutzername,passwort,email,vorname,nachname,wohnort,strUndHausNr,umsatz);
+	}
+
+	public boolean speichereKunde(Kunde k) throws IOException {
+		
+		// Benutzername,Passwort, Name,Vorname usw... schreiben
+		schreibeDaten(k.getBenutzername());
+		schreibeDaten(k.getPasswort());
+		schreibeDaten(k.getEmail());
+		schreibeDaten(k.getVorname());
+		schreibeDaten(k.getNachname());
+		schreibeDaten(k.getWohnort());
+		schreibeDaten(k.getStrasseUndHausnummer());
+		schreibeDaten(new Float(k.getUmsatz()).toString());
+		
+		return true;
+	}
+//####################MITARBEITER###########################
+	
+	// Methode zum Schreiben Mitarbeiter in einer externen Datenquelle
+	public boolean speichereMitarbeiter(Mitarbeiter m) throws IOException {
+		// ID,Passwort, Name, Preis usw... schreiben
+		schreibeDaten(m.getMitarbeiterID());
+		schreibeDaten(m.getPasswort());
+		schreibeDaten(m.getEmail());
+		schreibeDaten(m.getVorname());
+		schreibeDaten(m.getNachname());
+		schreibeDaten(m.getWohnort());
+		schreibeDaten(m.getStrasseUndHausnummer());
+		
+		return true;
+	}
+
+
+	/*
+	 * Private Hilfsmethoden
+	 */
+	
+	private String leseDaten() throws IOException {
+		if (reader != null)
+			return reader.readLine();
+		else
+			return "";
+	}
+
+	private void schreibeDaten(String daten) {
+		if (writer != null)
+			writer.println(daten);
+	}
+
+	public String ladeMitLogFile() throws IOException {
+		String einLogFile = leseDaten();
+		if(einLogFile == null){
+			return null;
+		}
+		else return einLogFile;
+	}
+
+	public void speichereMitLogFile(String s) {
+		// TODO Auto-generated method stub
+		schreibeDaten(s);
+	}
+
+
+	
+	
+
+	
+
+
+
+}
+

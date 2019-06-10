@@ -1,0 +1,18 @@
+user1
+user1
+user1@user.com
+U1
+First User
+Munich
+77777
+Hauptstr. 11
+0.0
+user2
+user2
+user2@user.com
+User2
+Second User
+Frankfurt
+50544
+Koenigstr. 14
+0.0

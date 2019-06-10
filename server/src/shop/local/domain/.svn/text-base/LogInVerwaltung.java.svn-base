@@ -1,0 +1,132 @@
+package shop.local.domain;
+
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Iterator;
+import java.util.Vector;
+
+import shop.local.persistence.FilePersistenceManager;
+import shop.local.persistence.PersistenceManager;
+import shop.local.ui.gui.LoginClient;
+import shop.local.valueobjects.Kunde;
+import shop.local.valueobjects.Mitarbeiter;
+
+
+/**
+ * Verwaltung der LogInDaten. Kunden und Verkäufer(Mitarbeiter) werden in Textdatei gespeichert.
+ * Beim LogIn prüft die jeweilige Methode (Kunde oder Verkäufer) ob entsprechende bereit in der Liste
+ * vorhanden sind. Wenn nicht, kann ein neuer Kunde/Verkäufer erstellt werden
+ * @param MitListe, KunListe, kvt, mvt - Referenzvariablen, beziehein sich auf entsprechende Klassen oder Listen
+ * @return true, Login Daten korrekt sind, sprich mit Daten in der Liste übereinstimmen
+ */
+
+public class LogInVerwaltung {
+	
+	private Vector MitListe = new Vector();
+	private Vector KunListe = new Vector();
+	private MitarbeiterVerwaltung mvt = new MitarbeiterVerwaltung();
+	private KundenVerwaltung kvt = new KundenVerwaltung();
+	private PersistenceManager logInPM = new FilePersistenceManager();
+	private LoginClient lc = new LoginClient();
+	private BufferedReader in;
+	
+	public LogInVerwaltung() throws IOException{
+		in = new BufferedReader(new InputStreamReader(System.in));
+		mvt.liesDaten("MITARBEITER_LISTE.txt");
+		kvt.liesDaten("KUNDEN_LISTE.txt");
+	}
+
+	
+	
+	// Fuege die Mitarbeiter in dem Vector ein..
+	private void einfuegen(Mitarbeiter einMitarbeiter) throws IOException {
+		// TODO Auto-generated method stub
+		MitListe.add(einMitarbeiter);
+	}
+	
+	public boolean MitlogIn() throws IOException{
+		String MitId = "";
+		String passwort = "";
+		System.out.print("Mitarbeiter ID : ");
+		MitId = liesEingabe();
+		System.out.print("Passwort : ");
+		passwort = liesEingabe();
+		
+		MitListe = mvt.getMitarbeiter();
+		Iterator iter = MitListe.iterator();
+		while(iter.hasNext()){
+			Mitarbeiter m = (Mitarbeiter) iter.next();
+			if(m.getMitarbeiterID().equals(MitId)&&m.getPasswort().equals(passwort)){
+				mvt.setzeBesitzer(m);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean KunlogIn() throws IOException{
+		String benutzerName = "";
+		String passwort = "";
+		System.out.print("Benutzer : ");
+		benutzerName = liesEingabe();
+		System.out.print("Passwort : ");
+		passwort = liesEingabe();
+		
+		KunListe = kvt.getKunde();
+		Iterator iter = KunListe.iterator();
+		while(iter.hasNext()){
+			Kunde k = (Kunde) iter.next();
+			if(k.getBenutzername().equals(benutzerName)&& k.getPasswort().equals(passwort)){
+				// Setze eine Kunde ein, um zu wissen, wer jetzt benutzt
+				kvt.besitzKunde(k);
+				return true;
+			}
+		}
+		return false;
+	}
+	//GUI-Kunden-Login
+	public boolean KundenLogin() throws IOException{
+		String benutzername = "";
+		String passwort = "";
+		benutzername = LoginClient.enterBenutzername.getText();
+		passwort = LoginClient.enterPasswort.getText();
+
+		
+		KunListe = kvt.getKunde();
+		Iterator iter = KunListe.iterator();
+		while(iter.hasNext()){
+			Kunde k = (Kunde) iter.next();
+			if(k.getBenutzername().equals(benutzername)&& k.getPasswort().equals(passwort)){
+				// Setze eine Kunde ein, um zu wissen, wer jetzt benutzt
+				kvt.besitzKunde(k);
+				return true;
+			}
+		}
+		return false;
+	}
+	//GUI-Mitarbeiter-Login
+	public boolean MitarbeiterLogin() throws IOException{
+		String MitId = "";
+		String passwort = "";
+		MitId = LoginClient.textMitarbeiterID.getText();
+		passwort = LoginClient.textMitarbeiterPassword.getText();
+
+		MitListe = mvt.getMitarbeiter();
+		Iterator iter = MitListe.iterator();
+		while(iter.hasNext()){
+			Mitarbeiter m = (Mitarbeiter) iter.next();
+			if(m.getMitarbeiterID().equals(MitId)&&m.getPasswort().equals(passwort)){
+				mvt.setzeBesitzer(m);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	protected String liesEingabe() throws IOException {
+		// einlesen von Konsole
+		return in.readLine();
+	}
+}

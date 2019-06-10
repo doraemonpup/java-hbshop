@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/402/trunk/eShop/src/shop/local/domain
+END
+MitarbeiterVerwaltung.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/402/trunk/eShop/src/shop/local/domain/MitarbeiterVerwaltung.java
+END
+ArtikelVerwaltung.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/402/trunk/eShop/src/shop/local/domain/ArtikelVerwaltung.java
+END
+EShopVerwaltung.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/407/trunk/eShop/src/shop/local/domain/EShopVerwaltung.java
+END
+KundenVerwaltung.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/401/trunk/eShop/src/shop/local/domain/KundenVerwaltung.java
+END
+LogInVerwaltung.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/407/trunk/eShop/src/shop/local/domain/LogInVerwaltung.java
+END
