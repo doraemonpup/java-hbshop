@@ -1,0 +1,68 @@
+package shop.local.valueobjects;
+
+/**
+ * Klasse Artikel.
+ * 
+ * @author Kritsada, Joe, Tobias
+ */
+
+public class Artikel {
+	protected int artikelID;
+	protected String artikelName;
+	protected float artikelPreis;
+	protected int artikelMenge;
+	private String type;
+	
+	public Artikel(int id,String name,float preis,int menge,String type){
+		this.artikelID = id;
+		this.artikelName = name;
+		this.artikelPreis = preis;
+		this.artikelMenge = menge;
+		this.type = type;
+	}
+	public Artikel(int id,String name,float preis,int menge){
+		this.artikelID = id;
+		this.artikelName = name;
+		this.artikelPreis = preis;
+		this.artikelMenge = menge;
+	}
+	public int getID(){
+		return artikelID;
+	}
+	public void setID(int neuId){
+		this.artikelID = neuId;
+	}
+	
+	public String getArtikelName(){
+		return artikelName;
+	}
+	public void setArtikelName(String name){
+		this.artikelName = name;
+	}
+	
+	public float getArtikelPreis(){
+		return artikelPreis;
+	}
+	public void setArtikelPreis(float neuPreis){
+		this.artikelPreis = neuPreis;
+	}
+	
+	public int getArtikelMenge(){
+		return artikelMenge;
+	}
+	public void setArtikelMenge(int menge){
+		this.artikelMenge = menge;
+	}
+	
+	public String getType(){
+		return type;
+	}
+	public void setType(String neuType){
+		type = neuType;
+	}
+
+	
+	public String toString() {
+		return ("ID: " + artikelID + " / Name: " + artikelName + " / Preis: " + artikelPreis +"/ Menge: "+artikelMenge);
+	}
+}

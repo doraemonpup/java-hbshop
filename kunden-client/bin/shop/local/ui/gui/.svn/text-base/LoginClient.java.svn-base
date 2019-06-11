@@ -1,0 +1,535 @@
+package shop.local.ui.gui;
+import java.awt.GridLayout;
+import java.awt.HeadlessException;
+import java.awt.Menu;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+import javax.swing.WindowConstants;
+import javax.swing.border.BevelBorder;
+import org.jdesktop.application.Application;
+import javax.swing.SwingUtilities;
+
+import shop.local.domain.EShopVerwaltung;
+import shop.local.exceptions.ArtikelExistiertBereitsException;
+import shop.local.exceptions.MitarbeiterExistiertBereitsException;
+
+
+
+/**
+* This code was edited or generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
+* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
+* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+*/
+public class LoginClient extends JFrame {
+	{
+		//Set Look & Feel
+		try {
+			javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static EShopVerwaltung Everwaltung;
+
+	private JLabel labelKundenlogin;
+	private JPanel linksPanel;
+	private JButton buttonLogin;
+	
+	private JPanel rechtsPanel;
+	private JPanel panelUnten;
+	private JLabel labelEnterVorname;
+	private JLabel labelEnterNachname;
+	private JLabel labelEnterEmail;
+	private JLabel labelEnterBenutzername;
+	private JLabel labelEnterPassword;
+	private JTextField textEnterVorname;
+	private JTextField textEnterNachname;
+	private JTextField textEnterEmail;
+	private JTextField textEnterBenutzername;
+	private JPasswordField textEnterPassword;
+	private JButton buttonCreateAccount;
+	private JButton buttonCancel;
+
+	private JLabel jLabel1;
+	private JButton buttonDirektZumShop;
+	private JButton buttonJetztRegistrieren;
+	private JLabel labelNochKeinKunde;
+	public static JPasswordField enterPasswort;
+	private JLabel labelPasswort;
+	public static JTextField enterBenutzername;
+	private JLabel labelBenutzername;
+	protected JFrame frame;
+	
+	private JPanel mitarbeiterPanel;
+	private JLabel labelMitarbeiterLogin;
+	private JLabel labelMitarbeiterID;
+	private JLabel labelMitarbeiterPassword;
+	public static JTextField textMitarbeiterID;
+	public static JPasswordField textMitarbeiterPassword;
+	private JButton buttonMitarbeiterLogin;
+	
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Everwaltung = new EShopVerwaltung("MYSHOP");
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (ArtikelExistiertBereitsException e) {
+					e.printStackTrace();
+				} catch (MitarbeiterExistiertBereitsException e) {
+					e.printStackTrace();
+				}
+				LoginClient inst = new LoginClient();
+				inst.setLocationRelativeTo(null);
+				inst.setVisible(true);
+				inst.setResizable(false);
+			}
+		});
+	}
+	
+	public LoginClient() {
+		super();
+		initGUI();
+		initMenu();
+	}
+	
+	private void initGUI() {
+		try {
+			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			getContentPane().setLayout(null);
+			this.setTitle("eShop");
+			//***************LinksPanel**************
+
+			{
+				linksPanel = new JPanel();
+				getContentPane().add(linksPanel);
+				linksPanel.setBounds(160, 167, 220, 240);
+				linksPanel.setLayout(null);
+				linksPanel.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
+				linksPanel.setName("linksPanel");
+				{
+					labelBenutzername = new JLabel();
+					linksPanel.add(labelBenutzername);
+					labelBenutzername.setText("Username");
+					labelBenutzername.setBounds(14, 82, 71, 15);
+				}
+				{
+					labelPasswort = new JLabel();
+					linksPanel.add(labelPasswort);
+					labelPasswort.setText("Password");
+					labelPasswort.setBounds(14, 112, 71, 15);
+				}
+				{
+					enterBenutzername = new JTextField();
+					linksPanel.add(enterBenutzername);
+					enterBenutzername.setBounds(91, 80, 110, 22);
+					enterBenutzername.setName("enterBenutzername");
+				}
+				{
+					enterPasswort = new JPasswordField();
+					linksPanel.add(enterPasswort);
+					enterPasswort.setBounds(91, 110, 110, 22);
+				}
+				{
+					buttonLogin = new JButton();
+					linksPanel.add(buttonLogin);
+					buttonLogin.setText("Login");
+					buttonLogin.setBounds(66, 168, 88, 24);
+					buttonLogin.addActionListener(new ActionListener() {
+				         public void actionPerformed(ActionEvent e) {
+				        	 try {
+								if(Everwaltung.kundenLogin()==true){
+								    	JOptionPane successMessage = new JOptionPane();
+								    	successMessage.setSize(400,300);
+								    	JOptionPane.showMessageDialog(frame, "Sie haben sich erfolgreich eingeloggt!","", JOptionPane.PLAIN_MESSAGE);	
+								 }
+								 else{
+								    	JOptionPane errorMessage = new JOptionPane();
+								    	errorMessage.setSize(400,300);
+								    	JOptionPane.showMessageDialog(frame, "Passwort oder Benutzername falsch... \nBitte versuchen Sie es erneut!","", JOptionPane.PLAIN_MESSAGE);	
+								 }
+							} catch (HeadlessException e1) {
+								e1.printStackTrace();
+							} catch (Exception e1) {
+								e1.printStackTrace();
+							}
+
+				         }
+				     });	
+				}
+				{
+					labelKundenlogin = new JLabel();
+					linksPanel.add(labelKundenlogin);
+					labelKundenlogin.setText("Kunden-Login");
+					labelKundenlogin.setBounds(15, 15, 105, 15);
+				}
+				{	//***************PanelUnten**************
+
+					panelUnten = new JPanel();
+					GridLayout panelUntenLayout = new GridLayout(1, 1);
+					panelUntenLayout.setHgap(5);
+					panelUntenLayout.setVgap(5);
+					panelUntenLayout.setColumns(1);
+					panelUnten.setLayout(panelUntenLayout);
+					getContentPane().add(panelUnten);
+					getContentPane().add(getJLabel1());
+					panelUnten.setBounds(160, 424, 458, 62);
+					panelUnten.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
+					{
+						buttonDirektZumShop = new JButton();
+						panelUnten.add(buttonDirektZumShop);
+						buttonDirektZumShop.setText("Direkt zum Shop");
+						//					buttonDirektZumShop.setPreferredSize(new java.awt.Dimension(408, 58));
+						buttonDirektZumShop.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								dispose();
+								try {
+									new GUIv1("Online-Shop", "MYSHOP");
+								} catch (IOException e1) {
+									e1.printStackTrace();
+								} catch (Exception e1) {
+									e1.printStackTrace();
+								}
+							}
+						});
+					}
+					
+				}
+				
+			}
+		//***************RechtsPanel**************
+			{
+				rechtsPanel = new JPanel();
+				getContentPane().add(rechtsPanel);
+				rechtsPanel.setBounds(398, 167, 220, 240);
+				rechtsPanel.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
+				rechtsPanel.setLayout(null);
+				rechtsPanel.setName("rechtsPanel");
+				{
+					labelNochKeinKunde = new JLabel();
+					rechtsPanel.add(labelNochKeinKunde);
+					labelNochKeinKunde.setText("Noch kein Kunde?");
+					labelNochKeinKunde.setBounds(14, 14, 169, 15);
+					labelNochKeinKunde.setVisible(true);
+				}
+				{
+					labelEnterVorname = new JLabel("Vorname");
+					rechtsPanel.add(labelEnterVorname);
+					labelEnterVorname.setBounds(14, 15, 75, 15);
+					labelEnterVorname.setVisible(false);
+				}
+				{
+					labelEnterNachname = new JLabel("Nachname");
+					rechtsPanel.add(labelEnterNachname);
+					labelEnterNachname.setBounds(14, 45, 75, 15);
+					labelEnterNachname.setVisible(false);
+				}
+				{
+					labelEnterEmail = new JLabel("E-Mail");
+					rechtsPanel.add(labelEnterEmail);
+					labelEnterEmail.setBounds(14, 75, 75, 15);
+					labelEnterEmail.setVisible(false);
+				}
+				{
+					labelEnterBenutzername = new JLabel("Username");
+					rechtsPanel.add(labelEnterBenutzername);
+					labelEnterBenutzername.setBounds(14, 105, 75, 15);
+					labelEnterBenutzername.setVisible(false);
+				}
+				{
+					labelEnterPassword = new JLabel("Password");
+					rechtsPanel.add(labelEnterPassword);
+					labelEnterPassword.setBounds(14, 135, 75, 15);
+					labelEnterPassword.setVisible(false);
+				}	
+				{
+					textEnterVorname = new JTextField();
+					rechtsPanel.add(textEnterVorname);
+					textEnterVorname.setBounds(90, 15, 110, 22);
+					textEnterVorname.setVisible(false);
+				}
+				{
+					textEnterNachname = new JTextField();
+					rechtsPanel.add(textEnterNachname);
+					textEnterNachname.setBounds(90, 45, 110, 22);
+					textEnterNachname.setVisible(false);				
+				}
+				{
+					textEnterEmail = new JTextField();
+					rechtsPanel.add(textEnterEmail);
+					textEnterEmail.setBounds(90, 75, 110, 22);
+					textEnterEmail.setVisible(false);		
+				}
+				{
+					textEnterBenutzername = new JTextField();
+					rechtsPanel.add(textEnterBenutzername);
+					textEnterBenutzername.setBounds(90, 105, 110, 22);
+					textEnterBenutzername.setVisible(false);		
+				}				
+				{
+					textEnterPassword = new JPasswordField();
+					rechtsPanel.add(textEnterPassword);
+					textEnterPassword.setBounds(90, 135, 110, 22);
+					textEnterPassword.setVisible(false);		
+				}
+				{
+					buttonCreateAccount = new JButton("Create Account");
+					rechtsPanel.add(buttonCreateAccount);
+					buttonCreateAccount.setBounds(39, 169, 140, 22);
+					buttonCreateAccount.setVisible(false);
+					buttonCreateAccount.addActionListener(new ActionListener() {
+				         public void actionPerformed(ActionEvent e) {
+					        	String vname = textEnterVorname.getText();
+					        	String nname = textEnterNachname.getText();
+					        	String mail = textEnterEmail.getText();
+					        	String bname = textEnterBenutzername.getText();
+					        	String pwort = textEnterPassword.getText();
+					        	
+					        	if(	textEnterVorname.getText().equals("")  ||	
+					        			textEnterNachname.getText().equals("") ||
+					        			textEnterEmail.getText().equals("") ||
+					        			textEnterBenutzername.getText().equals("") ||
+					        			textEnterPassword.getPassword().equals("") ){	
+					        		
+						        	JOptionPane errorMessage = new JOptionPane();
+						        	errorMessage.setSize(400,300);
+						        	JOptionPane.showMessageDialog(frame, "Bitte alle Felder ausfüllen!","", JOptionPane.WARNING_MESSAGE);					        		
+						        }
+					        	else{
+					        		Everwaltung.fuegeKundeEin(bname, pwort,mail, vname, nname);
+					        		try {
+					        			Everwaltung.schreibeKunde();
+					        		} catch (IOException e1) {
+					        			e1.printStackTrace();
+					        		}
+					        		JOptionPane successMessage = new JOptionPane();
+					        		successMessage.setSize(400,300);
+						        	JOptionPane.showMessageDialog(frame, "Sie haben sich erfolgreich registriert...\nWillkommen im eShop!","", JOptionPane.PLAIN_MESSAGE);
+						        	//Todo Weiterleiten zu KäuferClienten
+					        	}
+				         }
+				     });
+				}
+				{
+					buttonCancel = new JButton("Cancel");
+					rechtsPanel.add(buttonCancel);
+					buttonCancel.setBounds(39, 200, 140, 22);
+					buttonCancel.setVisible(false);	
+					buttonCancel.addActionListener(new ActionListener() {
+				         public void actionPerformed(ActionEvent e) {
+
+						    buttonJetztRegistrieren.setVisible(true);
+						    labelNochKeinKunde.setVisible(true);
+
+					    	labelEnterVorname.setVisible(false);
+					    	labelEnterNachname.setVisible(false);
+					    	labelEnterEmail.setVisible(false);
+					    	labelEnterBenutzername.setVisible(false);
+					    	labelEnterPassword.setVisible(false);
+					    	textEnterVorname.setVisible(false);
+					    	textEnterNachname.setVisible(false);
+					    	textEnterEmail.setVisible(false);
+					    	textEnterBenutzername.setVisible(false);
+					    	textEnterPassword.setVisible(false);
+					    	buttonCreateAccount.setVisible(false);  
+					    	buttonCancel.setVisible(false);
+					        
+					        rechtsPanel.repaint();
+				         }
+				     });				
+				}
+				{
+					
+					buttonJetztRegistrieren = new JButton();
+					rechtsPanel.add(buttonJetztRegistrieren);
+					buttonJetztRegistrieren.setText("Jetzt registrieren");
+					buttonJetztRegistrieren.setBounds(20, 114, 169, 22);
+					buttonJetztRegistrieren.setVisible(true);
+					buttonJetztRegistrieren.addActionListener(new ActionListener() {
+				         public void actionPerformed(ActionEvent e) {
+
+					        buttonJetztRegistrieren.setVisible(false);
+					        labelNochKeinKunde.setVisible(false);
+					        
+					    	labelEnterVorname.setVisible(true);
+					    	labelEnterNachname.setVisible(true);
+					    	labelEnterEmail.setVisible(true);
+					    	labelEnterBenutzername.setVisible(true);
+					    	labelEnterPassword.setVisible(true);
+					    	textEnterVorname.setVisible(true);
+					    	textEnterNachname.setVisible(true);
+					    	textEnterEmail.setVisible(true);
+					    	textEnterBenutzername.setVisible(true);
+					    	textEnterPassword.setVisible(true);
+					    	buttonCreateAccount.setVisible(true);  
+					    	buttonCancel.setVisible(true);
+					    						        
+					        rechtsPanel.repaint();
+				         }
+				     });
+				}
+				//***************MitarbeiterPanel**************
+				mitarbeiterPanel = new JPanel();
+				getContentPane().add(mitarbeiterPanel);
+				mitarbeiterPanel.setBounds(281, 167, 220, 240);
+				mitarbeiterPanel.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
+				mitarbeiterPanel.setLayout(null);
+				mitarbeiterPanel.setVisible(false);
+				{
+					labelMitarbeiterLogin = new JLabel("Mitarbeiter-Login");
+					mitarbeiterPanel.add(labelMitarbeiterLogin);
+					labelMitarbeiterLogin.setBounds(22, 26, 176, 22);
+					labelMitarbeiterLogin.setVisible(true);
+				}
+				{
+					labelMitarbeiterID = new JLabel("ID");
+					mitarbeiterPanel.add(labelMitarbeiterID);
+					labelMitarbeiterID.setBounds(22, 95, 62, 22);
+					labelMitarbeiterID.setVisible(true);
+				}
+				{
+					labelMitarbeiterPassword = new JLabel("Password");
+					mitarbeiterPanel.add(labelMitarbeiterPassword);
+					labelMitarbeiterPassword.setBounds(22, 136, 62, 22);
+					labelMitarbeiterPassword.setVisible(true);	
+				}
+				{
+					textMitarbeiterID = new JTextField();
+					mitarbeiterPanel.add(textMitarbeiterID);
+					textMitarbeiterID.setBounds(98, 96, 110, 22);
+					textMitarbeiterID.setVisible(true);	
+				}
+				{
+					textMitarbeiterPassword = new JPasswordField();
+					mitarbeiterPanel.add(textMitarbeiterPassword);
+					textMitarbeiterPassword.setBounds(98, 136, 110, 22);
+					textMitarbeiterPassword.setVisible(true);	
+				}
+				{
+					buttonMitarbeiterLogin = new JButton("Login");
+					mitarbeiterPanel.add(buttonMitarbeiterLogin);
+					buttonMitarbeiterLogin.setBounds(66, 202, 86, 22);
+					buttonMitarbeiterLogin.setVisible(true);
+					buttonMitarbeiterLogin.addActionListener(new ActionListener() {
+				         public void actionPerformed(ActionEvent e) {
+				        	 try {
+								if(Everwaltung.mitarbeiterLogin()==true){
+								    	JOptionPane successMessage = new JOptionPane();
+								    	successMessage.setSize(400,300);
+								    	JOptionPane.showMessageDialog(frame, "Sie haben sich erfolgreich eingeloggt!","", JOptionPane.PLAIN_MESSAGE);	
+								 }
+								 else{
+								    	JOptionPane errorMessage = new JOptionPane();
+								    	errorMessage.setSize(400,300);
+								    	JOptionPane.showMessageDialog(frame, "Passwort oder ID falsch... \nBitte versuchen Sie es erneut!","", JOptionPane.PLAIN_MESSAGE);	
+								 }
+							} catch (HeadlessException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							} catch (Exception e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+
+				         }
+				     });
+				}
+			}
+			pack();
+			setSize(800, 600);
+			
+			Application.getInstance().getContext().getResourceMap(getClass()).injectComponents(getContentPane());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	// MenuBar
+	private void initMenu() {
+		MenuActionListener mListener = new MenuActionListener();
+		
+		MenuBar leiste = new MenuBar();
+		this.setMenuBar(leiste);
+		
+		Menu fileMenu = new Menu("File");
+		leiste.add(fileMenu);
+		Menu helpMenu = new Menu("Help");
+		leiste.add(helpMenu);
+		
+		MenuItem kundenItem = new MenuItem("Kundenmodus");
+		kundenItem.addActionListener(mListener);
+		fileMenu.add(kundenItem);
+		MenuItem mitarbeiterItem = new MenuItem("Mitarbeitermodus");
+		mitarbeiterItem.addActionListener(mListener);
+		fileMenu.add(mitarbeiterItem);		
+		fileMenu.addSeparator();
+		MenuItem quitItem = new MenuItem("Quit");
+		quitItem.addActionListener(mListener);
+		fileMenu.add(quitItem);
+	}
+	//MenuBar ActionListener
+	class MenuActionListener implements ActionListener {
+
+		public void actionPerformed(ActionEvent ae) {
+			if (ae.getActionCommand().equals("Mitarbeitermodus")) {
+				linksPanel.setVisible(false);
+				rechtsPanel.setVisible(false);
+				panelUnten.setVisible(false);
+				mitarbeiterPanel.setVisible(true);
+			} 
+			if (ae.getActionCommand().equals("Kundenmodus")) {
+				linksPanel.setVisible(true);
+				rechtsPanel.setVisible(true);
+				panelUnten.setVisible(true);
+				mitarbeiterPanel.setVisible(false);
+			} 
+			if (ae.getActionCommand().equals("Quit")) {
+
+				setVisible(false);
+				dispose();
+			}
+		}
+	}
+
+	public static Object getGUIBuilderInstance() {
+		return new LoginClient(Boolean.FALSE);
+	}
+
+	public LoginClient(Boolean initGUI) {
+		super();
+	}
+	
+	private JLabel getJLabel1() {
+		if(jLabel1 == null) {
+			jLabel1 = new JLabel();
+			jLabel1.setText("eShop - GUI Test");
+			jLabel1.setBounds(183, 37, 412, 48);
+			jLabel1.setFont(new java.awt.Font("Dialog",1,28));
+		}
+		return jLabel1;
+	}
+	
+
+}

@@ -1,0 +1,10 @@
+package shop.local.exceptions;
+
+import shop.local.valueobjects.Artikel;
+
+public class ArtikelNichtVorhandenException extends Exception{
+	public ArtikelNichtVorhandenException(Artikel artikel, String zusatzMsg) {
+		super("Artikel ID " + artikel.getID() + ", Name " + artikel.getArtikelName() 
+				+ " ist nicht mehr vorhanden!! " + zusatzMsg);
+	}
+}

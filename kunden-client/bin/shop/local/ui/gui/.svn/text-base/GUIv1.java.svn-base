@@ -1,0 +1,178 @@
+package shop.local.ui.gui;
+
+import java.awt.BorderLayout;
+import java.awt.Button;
+import java.awt.Color;
+import java.awt.Dialog;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Label;
+import java.awt.List;
+import java.awt.Menu;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
+import java.awt.Panel;
+import java.awt.TextField;
+import java.awt.Toolkit;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Vector;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.border.Border;
+import shop.local.ui.cui.KaeuferClient;
+import shop.local.ui.cui.VerkaeuferClient;
+import shop.local.valueobjects.Artikel;
+import shop.local.valueobjects.GekaufteArtikel;
+import shop.local.valueobjects.Kunde;
+import shop.local.valueobjects.Mitarbeiter;
+import shop.local.domain.EShopVerwaltung;
+import shop.local.exceptions.ArtikelExistiertBereitsException;
+import shop.local.exceptions.KundeExistiertBereitsException;
+import shop.local.exceptions.MitarbeiterExistiertBereitsException;
+
+
+
+	public class GUIv1 extends Frame {
+		private EShopVerwaltung eVerwaltung;
+
+		public GUIv1(String title, String datei) throws IOException, Exception{
+		super(title);
+		eVerwaltung = new EShopVerwaltung(datei);
+
+		initialize();
+	}
+
+	private void initialize() {
+		//Globale Frame-Einstellung:
+		initMenu();
+		Panel mainPanel = new Panel();
+		mainPanel.setLayout(new BorderLayout(2,2));
+		this.add(mainPanel);
+		//******************************* MAIN-PREFERENCES
+		Panel abovePanel = new Panel(new FlowLayout());
+		Panel leftPanel = new Panel(new FlowLayout());
+		Panel rightPanel = new Panel(new FlowLayout());
+		Panel centerPanel = new Panel(new FlowLayout());
+		Panel downPanel = new Panel(new FlowLayout());
+		leftPanel.setBackground(java.awt.Color.orange);
+		rightPanel.setBackground(java.awt.Color.orange);
+		abovePanel.setBackground(java.awt.Color.orange);
+		downPanel.setBackground(java.awt.Color.orange);
+		//******************************* LEFT-PANEL-PREFERENCES
+		leftPanel.setPreferredSize(new Dimension(200,500));
+		
+		TextField enterBenutzername = new TextField();
+		TextField enterPasswort = new TextField();
+		Label benutzername = new Label("Nick");
+		Label passwort = new Label("Pass:");
+		
+		enterBenutzername.setPreferredSize(new Dimension(120,22));
+		enterPasswort.setPreferredSize(new Dimension(120,22));		
+		passwort.setPreferredSize(new Dimension(50,22));		
+		benutzername.setPreferredSize(new Dimension(50,22));		
+		
+		leftPanel.add(benutzername);
+		leftPanel.add(enterBenutzername);
+		leftPanel.add(passwort);		
+		leftPanel.add(enterPasswort);
+
+	
+		JButton zumLogin = new JButton(new ImageIcon("pics/but_login.gif"));
+		leftPanel.add(zumLogin);
+
+		//******************************* RIGHT-PANEL-PREFERENCES
+		rightPanel.setPreferredSize(new Dimension(200,500));
+
+		JLabel warenkorb = new JLabel(new ImageIcon("pics/warenkorb.gif"));
+		rightPanel.add(warenkorb);
+
+		//******************************* CENTER-PANEL-PREFERENCES	
+		centerPanel.setPreferredSize(new Dimension(400,500));
+
+		List warenListe = new List();
+		warenListe.setPreferredSize(new Dimension(1000,200));
+		centerPanel.add(warenListe);
+
+		Vector<Artikel> artikel = eVerwaltung.gibAlleArtikel();
+		warenListe.removeAll();
+		
+		for (Artikel a: artikel) {
+			warenListe.add(a.toString());
+		}
+
+
+		//*******************************
+		mainPanel.add(abovePanel, BorderLayout.NORTH);
+		mainPanel.add(leftPanel, BorderLayout.WEST);
+		mainPanel.add(rightPanel, BorderLayout.EAST);
+		mainPanel.add(centerPanel, BorderLayout.CENTER);
+		mainPanel.add(downPanel, BorderLayout.SOUTH);	
+		
+		//Panels sichtbar machen
+		this.setVisible(true);
+		this.pack();
+		// Grš§e des Fensters:
+		this.setSize(1000,800);
+		//Feste, nicht veraenderbare Groesse
+		this.setResizable(false); 
+		//Fenster mittig auf Bildschirm ausgeben:
+		Dimension d = Toolkit.getDefaultToolkit().  getScreenSize()  ;
+		this.  setLocation  ( (d.width - getSize().width ) / 2, (d.height- getSize().height) / 2 );
+	
+	}
+
+	private void initMenu() {
+		MenuActionListener mListener = new MenuActionListener();
+		
+		MenuBar leiste = new MenuBar();
+		this.setMenuBar(leiste);
+		
+		Menu fileMenu = new Menu("File");
+		leiste.add(fileMenu);
+		Menu helpMenu = new Menu("Help");
+		leiste.add(helpMenu);
+		
+		MenuItem saveItem = new MenuItem("Save");
+		saveItem.addActionListener(mListener);
+		fileMenu.add(saveItem);
+		fileMenu.addSeparator();
+		MenuItem quitItem = new MenuItem("Quit");
+		quitItem.addActionListener(mListener);
+		fileMenu.add(quitItem);
+	
+	}
+	
+	
+	class MenuActionListener implements ActionListener {
+
+		public void actionPerformed(ActionEvent ae) {
+			if (ae.getActionCommand().equals("Save")) {
+			} 
+			if (ae.getActionCommand().equals("Quit")) {
+
+				setVisible(false);
+				dispose();
+			}
+		}
+	}
+
+
+
+
+	
+	public static void main(String[] args) throws IOException, Exception {
+		
+		Frame myFrame = new GUIv1("Online-Shop", "MYSHOP");
+	}
+}

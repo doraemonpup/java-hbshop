@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/400/trunk/eShop/src/shop/local/exceptions
+END
+MitarbeiterExistiertBereitsException.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/!svn/ver/377/trunk/eShop/src/shop/local/exceptions/MitarbeiterExistiertBereitsException.java
+END
+KundeExistiertBereitsException.java
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/!svn/ver/375/trunk/eShop/src/shop/local/exceptions/KundeExistiertBereitsException.java
+END
+ArtikelNichtGefundenException.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/400/trunk/eShop/src/shop/local/exceptions/ArtikelNichtGefundenException.java
+END
+ArtikelExistiertBereitsException.java
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/!svn/ver/377/trunk/eShop/src/shop/local/exceptions/ArtikelExistiertBereitsException.java
+END
+ArtikelNichtVorhandenException.java
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/!svn/ver/400/trunk/eShop/src/shop/local/exceptions/ArtikelNichtVorhandenException.java
+END
