@@ -1,18 +1,18 @@
-user1
-user1
+u1
+u1
 user1@user.com
 User1
-FirstUser
-Munich
-77777
+Surname1
+Stuttgart
+70195
 Hauptstr. 11
 0.0
-user2
-user2
+u2
+u2
 user2@user.com
 User2
-Second User
+Surname2
 Frankfurt
-50544
+50594
 Koenigstr. 14
 0.0
